@@ -1,20 +1,22 @@
 .header {
-  height: 88px;
-  border-bottom: 1px solid var(--border);
+  height: 82px;
+  border-bottom: 3px solid var(--gold);
   position: relative;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 clamp(24px, 8vw, 96px);
-  background: #fff;
+  background: var(--forest-deep);
+  box-shadow: 0 5px 20px rgba(16, 39, 31, 0.15);
 }
 
 .logo {
   font-family: var(--serif);
-  font-size: 30px;
+  font-size: 28px;
   line-height: 1;
-  color: var(--ink);
+  color: #f7e8bb;
+  letter-spacing: 0.02em;
   text-decoration: none;
 }
 
@@ -28,7 +30,7 @@
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: var(--ink);
+  color: #f5ecd8;
   text-decoration: none;
   border: 1px solid transparent;
   border-radius: 999px;
@@ -38,7 +40,7 @@
 }
 
 .navLink:hover {
-  background: #f2f2f2;
-  border-color: #ececec;
+  background: rgba(245, 236, 216, 0.12);
+  border-color: rgba(245, 236, 216, 0.35);
   transform: translateY(-1px);
 }

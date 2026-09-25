@@ -19,7 +19,8 @@
 
 .brandTitle {
   font-family: var(--serif);
-  font-size: 34px;
+  color: var(--forest-deep);
+  font-size: 38px;
   line-height: 1;
   margin: 0 0 20px;
   font-weight: 400;
@@ -62,14 +63,14 @@
 
 .errorMessage {
   margin: 18px 0 0;
-  color: #b42318;
+  color: var(--ember);
   text-align: center;
   font-size: 13px;
 }
 
 .successMessage {
   margin: 18px 0 0;
-  color: #027a48;
+  color: var(--forest);
   text-align: center;
   font-size: 13px;
 }
@@ -84,7 +85,7 @@
 }
 
 .textLinks a {
-  color: var(--ink);
+  color: var(--ember);
   text-decoration: none;
 }
 

@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  background: #fff;
+  background: rgba(244, 237, 219, 0.72);
 }
 
 .main {

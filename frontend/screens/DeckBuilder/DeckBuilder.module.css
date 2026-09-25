@@ -30,10 +30,12 @@
 .select {
   height: 38px;
   border: 1px solid var(--border-strong);
-  border-radius: 999px;
+  border-radius: 3px;
   padding: 0 14px;
   font-family: var(--sans);
   font-size: 14px;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 .formatHint {
@@ -45,13 +47,13 @@
 .validationErrors {
   list-style: disc;
   padding-left: 20px;
-  color: #b42318;
+  color: var(--ember);
   font-size: 13px;
   margin: 0;
 }
 
 .error {
-  color: #b42318;
+  color: var(--ember);
   font-size: 13px;
 }
 
@@ -63,7 +65,7 @@
 .columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  gap: 24px;
 }
 
 .column {
@@ -71,11 +73,16 @@
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  background: rgba(255, 250, 240, 0.46);
 }
 
 .columnTitle {
-  font-family: var(--sans);
-  font-size: 16px;
+  color: var(--forest);
+  font-family: var(--serif);
+  font-size: 19px;
   font-weight: 700;
   margin: 0;
 }

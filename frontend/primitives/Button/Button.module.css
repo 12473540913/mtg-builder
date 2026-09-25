@@ -1,7 +1,7 @@
 .button {
   height: 44px;
   padding: 0 28px;
-  border-radius: 999px;
+  border-radius: 4px;
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
@@ -15,32 +15,32 @@
 }
 
 .primary {
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: #fff;
+  border: 1px solid var(--forest-deep);
+  background: var(--forest);
+  color: #fff8e7;
 }
 
 .primary:not(:disabled):hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 10px rgba(23, 59, 45, 0.2);
 }
 
 .ghost {
   border: 1px solid var(--border-strong);
   background: transparent;
-  color: var(--ink);
+  color: var(--forest);
 }
 
 .ghost:not(:disabled):hover {
-  background: #f2f2f2;
+  background: #e8ddc5;
 }
 
 .danger {
-  border: 1px solid #b42318;
+  border: 1px solid var(--ember);
   background: transparent;
-  color: #b42318;
+  color: var(--ember);
 }
 
 .danger:not(:disabled):hover {
-  background: #fdf0ef;
+  background: #f7e3d9;
 }

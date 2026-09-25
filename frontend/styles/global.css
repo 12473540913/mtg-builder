@@ -1,18 +1,24 @@
 :root {
-  --serif: "Times New Roman", Times, serif;
-  --sans: Arial, Helvetica, sans-serif;
-  --ink: #111;
-  --muted: #666;
-  --border: #e2e2e2;
-  --border-strong: #d8d8d8;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: "Trebuchet MS", Arial, sans-serif;
+  --ink: #1f241f;
+  --muted: #6b6a5f;
+  --forest: #173b2d;
+  --forest-deep: #10271f;
+  --parchment: #f4eddb;
+  --paper: #fffaf0;
+  --ember: #8f302d;
+  --gold: #b58a3b;
+  --border: #d8cdb5;
+  --border-strong: #bba988;
 
   /* Mana colors, used sparingly for format badges / commander color identity pips */
-  --mana-w: #f8f6d8;
-  --mana-u: #c1d7e9;
-  --mana-b: #cbc2bf;
-  --mana-r: #e49977;
-  --mana-g: #a3c095;
-  --mana-c: #ccc2c0;
+  --mana-w: #e7d79a;
+  --mana-u: #789cb8;
+  --mana-b: #746b69;
+  --mana-r: #b95843;
+  --mana-g: #6d8b5c;
+  --mana-c: #9b9384;
 }
 
 * {
@@ -27,7 +33,9 @@ body,
 }
 
 body {
-  background: #f3f3f3;
+  background-color: var(--parchment);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(95, 76, 40, 0.035) 1px, transparent 1px);
+  background-size: 100% 5px, 5px 100%;
   color: var(--ink);
   font-family: var(--sans);
 }
@@ -41,4 +49,9 @@ select {
 
 a {
   color: inherit;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--forest-deep);
 }
