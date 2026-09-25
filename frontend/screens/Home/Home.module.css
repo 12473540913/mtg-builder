@@ -1,0 +1,42 @@
+.homePage {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--serif);
+  font-size: 42px;
+  font-weight: 400;
+  margin: 0 0 16px;
+}
+
+.subtitle {
+  font-family: var(--sans);
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0 0 40px;
+}
+
+.homeNav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.navCard {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 18px 32px;
+  font-family: var(--sans);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.navCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}

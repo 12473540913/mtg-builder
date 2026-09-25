@@ -1,0 +1,102 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.imageWrap {
+  position: relative;
+  aspect-ratio: 5 / 7;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  background: #eee;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.tile:hover .imageWrap {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.commander .imageWrap {
+  border-color: #b8860b;
+  box-shadow: 0 0 0 2px #b8860b33;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.qtyBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.commanderBadge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #b8860b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 3px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.actionButton,
+.commanderButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actionButton:hover,
+.commanderButton:hover {
+  background: #f2f2f2;
+}
+
+.commanderButton {
+  color: #b8860b;
+  border-color: #b8860b;
+}

@@ -1,0 +1,15 @@
+# installed (from npm registry) libraries (dependencies)
+node_modules
+
+# environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# cloud keys
+gcp-sa-key.json
+
+# build output
+dist/

@@ -1,0 +1,31 @@
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.detailList {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 16px;
+  font-size: 14px;
+}
+
+.detailList dt {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.detailList dd {
+  margin: 0;
+}

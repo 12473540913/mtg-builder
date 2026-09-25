@@ -1,0 +1,41 @@
+// In dev, VITE_API_BASE_URL is unset so fetch uses the Vite proxy (relative paths work fine).
+// In prod (Cloudflare Pages), VITE_API_BASE_URL should point at the deployed backend origin.
+// Normalize it to reduce errors from missing schemes, trailing slashes, or mixed-content http URLs.
+const PRODUCTION_API_BASE = "https://api.mtg-builder.lnks.info";
+const PRODUCTION_AUTH_BASE = "https://auth.lnks.info";
+const API_BASE = normalizeApiBase(
+  import.meta.env.DEV ? import.meta.env.VITE_API_BASE_URL : import.meta.env.VITE_API_BASE_URL || PRODUCTION_API_BASE
+);
+// Use Vite's same-origin proxy during development so auth cookies work on localhost.
+const AUTH_BASE = import.meta.env.DEV
+  ? ""
+  : normalizeApiBase(import.meta.env.VITE_AUTH_BASE_URL || PRODUCTION_AUTH_BASE);
+
+function normalizeApiBase(rawValue: string | undefined): string {
+  const raw = String(rawValue ?? "").trim();
+  if (!raw) return "";
+
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+  // Avoid mixed-content failures when frontend is served over HTTPS.
+  if (
+    typeof window !== "undefined" &&
+    window.location.protocol === "https:" &&
+    /^http:\/\//i.test(withScheme) &&
+    !/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/i.test(withScheme)
+  ) {
+    return withScheme.replace(/^http:\/\//i, "https://").replace(/\/+$/, "");
+  }
+
+  return withScheme.replace(/\/+$/, "");
+}
+
+export function apiUrl(path: string): string {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${API_BASE}${normalizedPath}`;
+}
+
+export function authUrl(path: string): string {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${AUTH_BASE}${normalizedPath}`;
+}

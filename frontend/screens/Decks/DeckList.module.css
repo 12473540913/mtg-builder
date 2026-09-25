@@ -1,0 +1,100 @@
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.error {
+  color: #b42318;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 20px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.cardLink {
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deckName {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.formatBadge {
+  display: inline-block;
+  width: fit-content;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f2f2f2;
+  color: var(--muted);
+}
+
+.cardMeta {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.deleteButton {
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  color: #b42318;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.deleteButton:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,12 @@
+.card {
+  width: min(360px, calc(100vw - 42px));
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 40px 34px;
+  background: #fff;
+  text-align: center;
+}
+
+.wide {
+  width: min(520px, calc(100vw - 42px));
+}
