@@ -3,6 +3,9 @@
 A Magic: The Gathering deck builder. Sign in, search across every published Magic card,
 assemble decks with real card images, and save them to your account for later editing.
 
+## Demos
+- demo coming soon!
+
 ## Features
 
 - **Secure Authentication**: Email-based sign-up and login via the shared `auth-service`
@@ -14,6 +17,9 @@ assemble decks with real card images, and save them to your account for later ed
   - **Commander (EDH)** — exactly 100 cards, singleton, one legendary commander, color identity enforced
   - **Limited (Draft & Sealed)** — 40-card minimum
 - **Saved Decks**: Browse, edit, and delete your saved decks
+
+## Design
+- no figma wireframes at this moment
 
 ## Tech Stack
 
