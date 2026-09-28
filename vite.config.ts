@@ -11,7 +11,10 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_AUTH_BASE_URL || "https://auth.lnks.info",
           changeOrigin: true,
           secure: true,
-          cookieDomainRewrite: "",
+          // The upstream session cookie must belong to the local dev host so the
+          // browser sends it to the API proxy as well.
+          cookieDomainRewrite: { "*": "" },
+          cookiePathRewrite: { "*": "/" },
         },
       },
     },

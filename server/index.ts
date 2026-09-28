@@ -52,25 +52,39 @@ type AuthenticatedUser = {
 // trusting the token until it expires.
 async function getAuthenticatedUserFromCookie(req: express.Request): Promise<AuthenticatedUser | null> {
   const token = req.cookies?.[authCookieName] as string | undefined;
-  if (!token) return null;
-
-  try {
-    const payload = verifyAuthToken(token);
-    if (!ObjectId.isValid(payload.sub)) return null;
-
-    const db = await getDb();
-    const user = await db
-      .collection<{ _id: ObjectId; email: string; authVersion: number }>("users")
-      .findOne({ _id: new ObjectId(payload.sub) });
-
-    if (!user || user.authVersion !== payload.tokenVersion) {
-      return null;
-    }
-
-    return { id: String(user._id), email: user.email };
-  } catch {
+  if (!token) {
+    console.warn(`Auth rejected: ${authCookieName} cookie missing`);
     return null;
   }
+
+  let payload: ReturnType<typeof verifyAuthToken>;
+  try {
+    payload = verifyAuthToken(token);
+  } catch {
+    console.warn("Auth rejected: JWT verification failed");
+    return null;
+  }
+  console.log("Auth token verified", {
+    userId: payload.sub,
+    tokenVersion: payload.tokenVersion,
+  });
+  if (!ObjectId.isValid(payload.sub)) return null;
+
+  const db = await getDb();
+  const user = await db
+    .collection<{ _id: ObjectId; email: string; authVersion: number }>("users")
+    .findOne({ _id: new ObjectId(payload.sub) });
+
+  console.log("Auth user lookup", {
+    found: Boolean(user),
+    authVersion: user?.authVersion,
+  });
+  if (!user || user.authVersion !== payload.tokenVersion) {
+    console.warn("Auth rejected: user missing or auth version mismatch");
+    return null;
+  }
+
+  return { id: String(user._id), email: user.email };
 }
 
 const VALID_FORMATS = new Set(["house", "standard", "commander", "limited"]);

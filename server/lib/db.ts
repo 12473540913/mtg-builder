@@ -14,10 +14,9 @@ if (!connectionString) {
 const dbName = process.env.MONGODB_DB_NAME?.trim() || undefined;
 
 const client = new MongoClient(connectionString);
-const ready = client.connect();
 
 export async function getDb(): Promise<Db> {
-  await ready;
+  await client.connect();
   return client.db(dbName);
 }
 
