@@ -44,3 +44,19 @@
 .danger:not(:disabled):hover {
   background: #f7e3d9;
 }
+
+.success {
+  border: 1px solid #2f6b35;
+  background: #3d8b45;
+  color: #fff;
+}
+
+.failure {
+  border: 1px solid #6e2220;
+  background: var(--ember);
+  color: #fff;
+}
+
+.failure:not(:disabled):hover {
+  background: #a33a36;
+}

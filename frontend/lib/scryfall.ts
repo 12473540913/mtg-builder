@@ -52,7 +52,10 @@ export async function searchCards(query: string, page = 1): Promise<ScryfallSear
     return { cards: [], hasMore: false, totalCards: 0, nextPage: null };
   }
 
-  const url = `${SCRYFALL_BASE}/cards/search?q=${encodeURIComponent(trimmed)}&order=name&page=${page}`;
+  // Name-prefix match only (Scryfall regex is case-insensitive); escape user input so it's treated literally.
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&").replace(/\s+/g, "\\s+");
+  const scryfallQuery = `name:/^${escaped}/`;
+  const url = `${SCRYFALL_BASE}/cards/search?q=${encodeURIComponent(scryfallQuery)}&order=name&page=${page}`;
   const response = await fetch(url);
 
   if (response.status === 404) {

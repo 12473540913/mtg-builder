@@ -1,17 +1,48 @@
 .tile {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .imageWrap {
   position: relative;
+  flex: 1;
+  min-width: 0;
   aspect-ratio: 5 / 7;
   border-radius: 5px;
   overflow: hidden;
   border: 1px solid var(--border-strong);
   background: #ded2b8;
   transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.coverSelectButton {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.coverSelectButton:hover,
+.coverSelectButton:focus-visible {
+  background: rgba(13, 39, 30, 0.42);
+  outline: 3px solid var(--gold);
+  outline-offset: -3px;
+}
+
+.coverSelectButton:hover::after,
+.coverSelectButton:focus-visible::after {
+  content: "Select cover";
+  position: absolute;
+  inset: auto 0 0;
+  padding: 8px;
+  color: #fff;
+  background: var(--forest);
+  font: 700 13px var(--sans);
 }
 
 .tile:hover .imageWrap {
@@ -43,18 +74,6 @@
   color: var(--muted);
 }
 
-.qtyBadge {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: rgba(16, 39, 31, 0.88);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 2px 8px;
-}
-
 .commanderBadge {
   position: absolute;
   bottom: 0;
@@ -70,16 +89,59 @@
   letter-spacing: 0.04em;
 }
 
-.actions {
+.controls {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   gap: 6px;
+  width: 48px;
+  flex-shrink: 0;
+}
+
+.controlLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.qtyValue {
+  width: 100%;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: var(--forest);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.stepInput {
+  width: 100%;
+  height: 32px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.stepInput::-webkit-outer-spin-button,
+.stepInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .actionButton,
 .commanderButton {
-  width: 28px;
-  height: 28px;
+  width: 100%;
+  height: 32px;
   border-radius: 3px;
   border: 1px solid var(--border-strong);
   background: var(--paper);
@@ -91,9 +153,26 @@
   justify-content: center;
 }
 
-.actionButton:hover,
+.coverBadge {
+  width: 100%;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  color: var(--gold);
+  background: var(--paper);
+}
+
+.actionButton:hover:not(:disabled),
 .commanderButton:hover {
   background: #e8ddc5;
+}
+
+.actionButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .commanderButton {

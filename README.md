@@ -18,6 +18,18 @@ assemble decks with real card images, and save them to your account for later ed
   - **Limited (Draft & Sealed)** — 40-card minimum
 - **Saved Decks**: Browse, edit, and delete your saved decks
 
+## Scope
+
+This app does not track your total card collection. It is designed to help you save,
+edit, and delete deck lists, including the cards and quantities in each deck, so you can
+experiment with deck combinations while keeping a record of the decks you have built.
+You are responsible for building decks from the cards available to you.
+
+Checking whether multiple decks can be played at the same time based on your collection
+is a possible future feature, but it is not in scope right now. That would require
+tracking which cards you own and their quantities, then checking whether those cards
+are available in sufficient quantities across the decks you want to use together.
+
 ## Design
 - no figma wireframes at this moment
 

@@ -6,10 +6,11 @@ type Props = {
   type: "username" | "email" | "password" | "text" | "search";
   value: string;
   placeholder?: string;
+  ariaLabel?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function Input({ type, value, placeholder, onChange }: Props) {
+export function Input({ type, value, placeholder, ariaLabel, onChange }: Props) {
   const [showPassword, setShowPassword] = useState(false);
 
   const config = useMemo(() => {
@@ -38,6 +39,7 @@ export function Input({ type, value, placeholder, onChange }: Props) {
           type={inputType}
           value={value}
           placeholder={placeholder}
+          aria-label={ariaLabel}
           onChange={onChange}
         />
 

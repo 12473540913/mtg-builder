@@ -37,6 +37,7 @@ export type DeckSummary = {
   name: string;
   format: DeckFormat;
   description: string | null;
+  coverCard: Pick<DeckCard, "name" | "imageUrl"> | null;
   created_at: string;
   updated_at: string;
   card_count: number;
@@ -48,6 +49,7 @@ export type Deck = {
   name: string;
   format: DeckFormat;
   description: string | null;
+  coverCardId: string | null;
   created_at: string;
   updated_at: string;
   cards: DeckCard[];

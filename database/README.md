@@ -26,6 +26,7 @@ rather than mirroring the old relational `decks` + `deck_cards` split.
   "name": "Boros Aggro",
   "format": "standard", // "house" | "standard" | "commander" | "limited"
   "description": "optional text",
+  "coverCardId": "...", // scryfallId of a card in this deck
   "cards": [
     {
       "scryfallId": "...",

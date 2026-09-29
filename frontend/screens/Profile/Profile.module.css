@@ -29,3 +29,41 @@
 .detailList dd {
   margin: 0;
 }
+
+.passwordSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.passwordForm {
+  width: 100%;
+  display: grid;
+  gap: 16px;
+}
+
+.passwordField {
+  display: grid;
+  gap: 8px;
+}
+
+.fieldLabel {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.errorMessage,
+.successMessage {
+  margin: 0;
+  font-size: 13px;
+}
+
+.errorMessage {
+  color: var(--ember);
+}
+
+.successMessage {
+  color: var(--forest);
+}

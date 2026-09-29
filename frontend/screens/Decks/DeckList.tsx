@@ -3,9 +3,15 @@ import { Link } from "react-router-dom";
 import { ScreenShell } from "../../components/ScreenShell";
 import { Button } from "../../primitives/Button";
 import { decksApi } from "../../lib";
-import { DECK_FORMAT_LABELS } from "../../types";
 import type { DeckSummary } from "../../types";
 import styles from "./DeckList.module.css";
+
+const deckLanes = [
+  { format: "standard", title: "Standard" },
+  { format: "commander", title: "Commander" },
+  { format: "limited", title: "Limited" },
+  { format: "house", title: "House Rules" },
+] as const;
 
 export function DeckList() {
   const [decks, setDecks] = useState<DeckSummary[] | null>(null);
@@ -28,17 +34,6 @@ export function DeckList() {
     };
   }, []);
 
-  async function handleDelete(id: string) {
-    if (!window.confirm("Delete this deck? This cannot be undone.")) return;
-
-    try {
-      await decksApi.remove(id);
-      setDecks((prev) => prev?.filter((deck) => deck.id !== id) ?? null);
-    } catch (err: any) {
-      setErrorMessage(err.message ?? "Could not delete deck.");
-    }
-  }
-
   return (
     <ScreenShell headerVariant="user">
       <div className={styles.page}>
@@ -54,22 +49,35 @@ export function DeckList() {
         {decks === null && !errorMessage && <p className={styles.empty}>Loading decks...</p>}
         {decks && decks.length === 0 && <p className={styles.empty}>You haven't saved any decks yet.</p>}
 
-        <div className={styles.grid}>
-          {decks?.map((deck) => (
-            <div key={deck.id} className={styles.card}>
-              <Link to={`/decks/${deck.id}`} className={styles.cardLink}>
-                <h2 className={styles.deckName}>{deck.name}</h2>
-                <span className={styles.formatBadge}>{DECK_FORMAT_LABELS[deck.format]}</span>
-                <p className={styles.cardMeta}>
-                  {deck.total_cards} card{deck.total_cards === 1 ? "" : "s"}
-                </p>
-              </Link>
-              <button type="button" className={styles.deleteButton} onClick={() => handleDelete(deck.id)}>
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
+        {decks && (
+          <div className={styles.lanes}>
+            {deckLanes.map((lane) => (
+              <section key={lane.format} className={styles.lane}>
+                <h2 className={styles.laneTitle}>{lane.title}</h2>
+                <div className={styles.grid}>
+                  {decks
+                    .filter((deck) => deck.format === lane.format)
+                    .map((deck) => (
+                      <div key={deck.id} className={styles.card}>
+                        <Link to={`/decks/${deck.id}`} className={styles.cardLink}>
+                          <div className={styles.cardDetails}>
+                            <h3 className={styles.deckName}>{deck.name}</h3>
+                            <p className={styles.description}>{deck.description || "..."}</p>
+                            <p className={styles.cardMeta}>
+                              {deck.total_cards} card{deck.total_cards === 1 ? "" : "s"}
+                            </p>
+                          </div>
+                          {deck.coverCard?.imageUrl && (
+                            <img className={styles.coverImage} src={deck.coverCard.imageUrl} alt={deck.coverCard.name} loading="lazy" />
+                          )}
+                        </Link>
+                      </div>
+                    ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
       </div>
     </ScreenShell>
   );

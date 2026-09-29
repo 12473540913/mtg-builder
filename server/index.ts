@@ -108,6 +108,7 @@ type DeckDoc = {
   name: string;
   format: string;
   description: string | null;
+  coverCardId: string | null;
   cards: DeckCardDoc[];
   createdAt: Date;
   updatedAt: Date;
@@ -149,6 +150,7 @@ function toDeckResponse(deck: DeckDoc) {
     name: deck.name,
     format: deck.format,
     description: deck.description,
+    coverCardId: deck.coverCardId ?? null,
     created_at: deck.createdAt,
     updated_at: deck.updatedAt,
     cards: [...deck.cards].sort((a, b) => Number(b.isCommander) - Number(a.isCommander) || a.name.localeCompare(b.name)),
@@ -176,6 +178,24 @@ app.get("/api/decks", async (req, res) => {
             description: 1,
             createdAt: 1,
             updatedAt: 1,
+            coverCard: {
+              $arrayElemAt: [
+                {
+                  $map: {
+                    input: {
+                      $filter: {
+                        input: { $ifNull: ["$cards", []] },
+                        as: "card",
+                        cond: { $eq: ["$$card.scryfallId", "$coverCardId"] },
+                      },
+                    },
+                    as: "card",
+                    in: { name: "$$card.name", imageUrl: "$$card.imageUrl" },
+                  },
+                },
+                0,
+              ],
+            },
             card_count: { $size: "$cards" },
             total_cards: { $sum: "$cards.quantity" },
           },
@@ -191,6 +211,7 @@ app.get("/api/decks", async (req, res) => {
         name: deck.name,
         format: deck.format,
         description: deck.description,
+        coverCard: deck.coverCard ?? null,
         created_at: deck.createdAt,
         updated_at: deck.updatedAt,
         card_count: deck.card_count,
@@ -245,6 +266,7 @@ app.post("/api/decks", async (req, res) => {
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const format = typeof body.format === "string" ? body.format : "house";
     const description = typeof body.description === "string" ? body.description : null;
+    const coverCardId = typeof body.coverCardId === "string" ? body.coverCardId : null;
     const cards = normalizeCards(body.cards);
 
     if (!name) {
@@ -255,6 +277,10 @@ app.post("/api/decks", async (req, res) => {
       res.status(400).json({ ok: false, error: "Invalid deck format" });
       return;
     }
+    if (!coverCardId || !cards.some((card) => card.scryfallId === coverCardId)) {
+      res.status(400).json({ ok: false, error: "A cover card from this deck is required" });
+      return;
+    }
 
     const db = await getDb();
     const now = new Date();
@@ -263,6 +289,7 @@ app.post("/api/decks", async (req, res) => {
       name,
       format,
       description,
+      coverCardId,
       cards,
       createdAt: now,
       updatedAt: now,
@@ -294,6 +321,7 @@ app.put("/api/decks/:id", async (req, res) => {
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const format = typeof body.format === "string" ? body.format : "house";
     const description = typeof body.description === "string" ? body.description : null;
+    const coverCardId = typeof body.coverCardId === "string" ? body.coverCardId : null;
     const cards = normalizeCards(body.cards);
 
     if (!name) {
@@ -304,13 +332,17 @@ app.put("/api/decks/:id", async (req, res) => {
       res.status(400).json({ ok: false, error: "Invalid deck format" });
       return;
     }
+    if (!coverCardId || !cards.some((card) => card.scryfallId === coverCardId)) {
+      res.status(400).json({ ok: false, error: "A cover card from this deck is required" });
+      return;
+    }
 
     const db = await getDb();
     const deckId = new ObjectId(req.params.id);
 
     const result = await db.collection<DeckDoc>("decks").findOneAndUpdate(
       { _id: deckId, userId: user.id },
-      { $set: { name, format, description, cards, updatedAt: new Date() } },
+      { $set: { name, format, description, coverCardId, cards, updatedAt: new Date() } },
       { returnDocument: "after" }
     );
 

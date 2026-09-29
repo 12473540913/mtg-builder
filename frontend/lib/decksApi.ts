@@ -23,6 +23,7 @@ export type SaveDeckInput = {
   name: string;
   format: DeckFormat;
   description?: string | null;
+  coverCardId: string | null;
   cards: DeckCard[];
 };
 

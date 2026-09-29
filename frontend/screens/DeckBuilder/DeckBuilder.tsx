@@ -11,6 +11,20 @@ import styles from "./DeckBuilder.module.css";
 
 const FORMATS: DeckFormat[] = ["house", "standard", "commander", "limited"];
 
+const SAVE_LABELS = {
+  idle: "Save Deck",
+  saving: "Saving...",
+  saved: "Saved",
+  failed: "Failed",
+};
+
+const DELETE_LABELS = {
+  idle: "Delete Deck",
+  deleting: "Deleting...",
+  deleted: "Deleted",
+  failed: "Failed",
+};
+
 export function DeckBuilder() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -20,15 +34,33 @@ export function DeckBuilder() {
   const [format, setFormat] = useState<DeckFormat>("house");
   const [description, setDescription] = useState("");
   const [cards, setCards] = useState<DeckCard[]>([]);
+  const [coverCardId, setCoverCardId] = useState<string | null>(null);
 
+  const [activeTab, setActiveTab] = useState<"browse" | "deck" | "cover">("browse");
+  const [isSelectingCover, setIsSelectingCover] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<MtgCard[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(isEditing);
-  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "failed">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [deleteStatus, setDeleteStatus] = useState<"idle" | "deleting" | "deleted" | "failed">("idle");
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (saveStatus !== "saved") return;
+    const timeout = setTimeout(() => setSaveStatus("idle"), 2000);
+    return () => clearTimeout(timeout);
+  }, [saveStatus]);
+
+  useEffect(() => {
+    if (deleteStatus !== "deleted") return;
+    const timeout = setTimeout(() => navigate("/decks"), 2000);
+    return () => clearTimeout(timeout);
+  }, [deleteStatus, navigate]);
 
   useEffect(() => {
     if (!isEditing || !id) return;
@@ -40,6 +72,7 @@ export function DeckBuilder() {
         setFormat(deck.format);
         setDescription(deck.description ?? "");
         setCards(deck.cards);
+        setCoverCardId(deck.coverCardId ?? null);
       })
       .catch((err) => setErrorMessage(err.message ?? "Could not load deck."))
       .finally(() => setLoading(false));
@@ -66,22 +99,43 @@ export function DeckBuilder() {
 
   const validation = useMemo(() => validateDeck(format, cards), [format, cards]);
 
-  function addCard(card: MtgCard) {
+  const totalCards = cards.reduce((sum, c) => sum + c.quantity, 0);
+  const coverCard = cards.find((card) => card.scryfallId === coverCardId);
+
+  function openDeckTab(tab: "browse" | "deck") {
+    setIsSelectingCover(false);
+    setActiveTab(tab);
+  }
+
+  function selectCoverCard(scryfallId: string) {
+    setCoverCardId(scryfallId);
+    setIsSelectingCover(false);
+    setActiveTab("cover");
+  }
+
+  function addCard(card: MtgCard, amount: number) {
     setCards((prev) => {
       const existing = prev.find((c) => c.scryfallId === card.scryfallId);
       if (existing) {
-        return prev.map((c) => (c.scryfallId === card.scryfallId ? { ...c, quantity: c.quantity + 1 } : c));
+        return prev.map((c) => (c.scryfallId === card.scryfallId ? { ...c, quantity: c.quantity + amount } : c));
       }
-      return [...prev, { ...card, quantity: 1, isCommander: false }];
+      return [...prev, { ...card, quantity: amount, isCommander: false }];
     });
   }
 
-  function removeCard(scryfallId: string) {
+  function removeCard(scryfallId: string, amount: number) {
+    const existing = cards.find((c) => c.scryfallId === scryfallId);
+    if (coverCardId === scryfallId && existing && existing.quantity <= amount) {
+      setCoverCardId(null);
+      setIsSelectingCover(true);
+      setActiveTab("cover");
+    }
+
     setCards((prev) => {
       const existing = prev.find((c) => c.scryfallId === scryfallId);
       if (!existing) return prev;
-      if (existing.quantity <= 1) return prev.filter((c) => c.scryfallId !== scryfallId);
-      return prev.map((c) => (c.scryfallId === scryfallId ? { ...c, quantity: c.quantity - 1 } : c));
+      if (existing.quantity <= amount) return prev.filter((c) => c.scryfallId !== scryfallId);
+      return prev.map((c) => (c.scryfallId === scryfallId ? { ...c, quantity: c.quantity - amount } : c));
     });
   }
 
@@ -90,20 +144,35 @@ export function DeckBuilder() {
   }
 
   async function handleSave() {
-    if (!name.trim() || cards.length === 0) return;
+    if (!name.trim() || cards.length === 0 || !coverCard) return;
 
     try {
-      setSaving(true);
-      setErrorMessage(null);
+      setSaveStatus("saving");
+      setSaveError(null);
 
-      const input = { name: name.trim(), format, description: description.trim() || null, cards };
+      const input = { name: name.trim(), format, description: description.trim() || null, cards, coverCardId };
       const saved = isEditing && id ? await decksApi.update(id, input) : await decksApi.create(input);
 
-      navigate(`/decks/${saved.id}`);
+      setSaveStatus("saved");
+      // New decks move to their own URL so later saves update instead of creating duplicates.
+      if (!isEditing) navigate(`/decks/${saved.id}`, { replace: true });
     } catch (err: any) {
-      setErrorMessage(err.message ?? "Could not save deck.");
-    } finally {
-      setSaving(false);
+      setSaveError(err.message ?? "Could not save deck.");
+      setSaveStatus("failed");
+    }
+  }
+
+  async function handleDelete() {
+    if (!id || !window.confirm("Delete this deck? This cannot be undone.")) return;
+
+    try {
+      setDeleteStatus("deleting");
+      setDeleteError(null);
+      await decksApi.remove(id);
+      setDeleteStatus("deleted");
+    } catch (err: any) {
+      setDeleteError(err.message ?? "Could not delete deck.");
+      setDeleteStatus("failed");
     }
   }
 
@@ -138,7 +207,7 @@ export function DeckBuilder() {
         </div>
 
         <div className={styles.metaField}>
-          <label className={styles.metaLabel}>Description (optional)</label>
+          <label className={styles.metaLabel}>Description</label>
           <Input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
         </div>
 
@@ -153,16 +222,66 @@ export function DeckBuilder() {
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
         <div className={styles.saveRow}>
+          {isEditing && (
+            <div className={styles.deleteSlot}>
+              <Button
+                text={DELETE_LABELS[deleteStatus]}
+                variant={deleteStatus === "deleted" ? "success" : deleteStatus === "failed" ? "failure" : "danger"}
+                onClick={handleDelete}
+                disabled={deleteStatus === "deleting" || deleteStatus === "deleted" || saveStatus === "saving"}
+              />
+            </div>
+          )}
+          <div className={styles.tabs} role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "cover"}
+              className={`${styles.tab} ${activeTab === "cover" ? styles.tabActive : ""} ${isSelectingCover ? styles.tabGhosted : ""}`}
+              onClick={() => {
+                setActiveTab("cover");
+                setIsSelectingCover(!coverCard);
+              }}
+            >
+              Cover Card
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "browse"}
+              className={`${styles.tab} ${activeTab === "browse" ? styles.tabActive : ""}`}
+              onClick={() => openDeckTab("browse")}
+            >
+              Browse
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "deck"}
+              className={`${styles.tab} ${activeTab === "deck" ? styles.tabActive : ""}`}
+              onClick={() => openDeckTab("deck")}
+            >
+              Edit Deck ({totalCards})
+            </button>
+          </div>
           <Button
-            text={saving ? "Saving..." : "Save Deck"}
+            text={SAVE_LABELS[saveStatus]}
+            variant={saveStatus === "saved" ? "success" : saveStatus === "failed" ? "failure" : "primary"}
             onClick={handleSave}
-            disabled={saving || !name.trim() || cards.length === 0}
+            disabled={saveStatus === "saving" || deleteStatus === "deleting" || deleteStatus === "deleted" || !name.trim() || cards.length === 0 || !coverCard}
           />
         </div>
 
-        <div className={styles.columns}>
+        {(deleteError || saveError) && (
+          <div className={styles.errorRow}>
+            {deleteError && <p className={styles.deleteError}>{deleteError}</p>}
+            {saveError && <p className={styles.saveError}>{saveError}</p>}
+          </div>
+        )}
+
+        {activeTab === "cover" && isSelectingCover ? (
           <section className={styles.column}>
-            <h2 className={styles.columnTitle}>Deck ({cards.reduce((sum, c) => sum + c.quantity, 0)} cards)</h2>
+            <h2 className={styles.columnTitle}>Select a cover card</h2>
             <div className={styles.grid}>
               {cards.map((card) => (
                 <CardTile
@@ -170,27 +289,82 @@ export function DeckBuilder() {
                   card={card}
                   quantity={card.quantity}
                   isCommander={card.isCommander}
-                  onAdd={() => addCard(card)}
-                  onRemove={() => removeCard(card.scryfallId)}
+                  onAdd={(amount) => addCard(card, amount)}
+                  onRemove={(amount) => removeCard(card.scryfallId, amount)}
+                  onSetCommander={format === "commander" ? () => setCommander(card.scryfallId) : undefined}
+                  onSelectCover={() => selectCoverCard(card.scryfallId)}
+                />
+              ))}
+            </div>
+            {cards.length === 0 && <p className={styles.empty}>Add cards in Browse before selecting a cover card.</p>}
+          </section>
+        ) : activeTab === "cover" ? (
+          <section className={styles.column}>
+            <div className={styles.coverHeader}>
+              <h2 className={styles.columnTitle}>Cover Card</h2>
+              <button type="button" className={styles.changeCoverButton} onClick={() => setIsSelectingCover(true)}>
+                Change Cover
+              </button>
+            </div>
+            {coverCard ? (
+              <div className={styles.grid}>
+                <CardTile
+                  card={coverCard}
+                  quantity={coverCard.quantity}
+                  isCommander={coverCard.isCommander}
+                  isCoverCard
+                  onAdd={(amount) => addCard(coverCard, amount)}
+                  onRemove={(amount) => removeCard(coverCard.scryfallId, amount)}
+                  onSetCommander={format === "commander" ? () => setCommander(coverCard.scryfallId) : undefined}
+                />
+              </div>
+            ) : (
+              <p className={styles.empty}>Select a cover card from the deck.</p>
+            )}
+          </section>
+        ) : activeTab === "deck" ? (
+          <section className={styles.column}>
+            <h2 className={styles.columnTitle}>Deck ({totalCards} cards)</h2>
+            <div className={styles.grid}>
+              {cards.map((card) => (
+                <CardTile
+                  key={card.scryfallId}
+                  card={card}
+                  quantity={card.quantity}
+                  isCommander={card.isCommander}
+                  isCoverCard={card.scryfallId === coverCardId}
+                  onAdd={(amount) => addCard(card, amount)}
+                  onRemove={(amount) => removeCard(card.scryfallId, amount)}
                   onSetCommander={format === "commander" ? () => setCommander(card.scryfallId) : undefined}
                 />
               ))}
-              {cards.length === 0 && <p className={styles.empty}>Search for cards on the right to add them here.</p>}
             </div>
+            {cards.length === 0 && <p className={styles.empty}>Use the Browse tab to add cards to this deck.</p>}
           </section>
-
+        ) : (
           <section className={styles.column}>
             <h2 className={styles.columnTitle}>Browse every Magic card</h2>
-            <Input type="search" value={query} placeholder="Search by name, type, or text..." onChange={(e) => setQuery(e.target.value)} />
+            <Input type="search" value={query} placeholder="Search by card name..." onChange={(e) => setQuery(e.target.value)} />
             {searching && <p className={styles.empty}>Searching...</p>}
             {searchError && <p className={styles.error}>{searchError}</p>}
             <div className={styles.grid}>
-              {results.map((card) => (
-                <CardTile key={card.scryfallId} card={card} onAdd={() => addCard(card)} />
-              ))}
+              {results.map((card) => {
+                const deckCard = cards.find((c) => c.scryfallId === card.scryfallId);
+                return (
+                  <CardTile
+                    key={card.scryfallId}
+                    card={card}
+                    quantity={deckCard?.quantity ?? 0}
+                    isCommander={deckCard?.isCommander}
+                    onAdd={(amount) => addCard(card, amount)}
+                    onRemove={(amount) => removeCard(card.scryfallId, amount)}
+                    onSetCommander={format === "commander" && deckCard ? () => setCommander(card.scryfallId) : undefined}
+                  />
+                );
+              })}
             </div>
           </section>
-        </div>
+        )}
       </div>
     </ScreenShell>
   );
