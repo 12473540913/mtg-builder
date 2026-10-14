@@ -35,7 +35,7 @@ export function DeckList() {
   }, []);
 
   return (
-    <ScreenShell headerVariant="user">
+    <ScreenShell headerVariant="user" showFlag={false}>
       <div className={styles.page}>
         <div className={styles.header}>
           <h1 className={styles.title}>My Decks</h1>
@@ -47,7 +47,6 @@ export function DeckList() {
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
 
         {decks === null && !errorMessage && <p className={styles.empty}>Loading decks...</p>}
-        {decks && decks.length === 0 && <p className={styles.empty}>You haven't saved any decks yet.</p>}
 
         {decks && (
           <div className={styles.lanes}>

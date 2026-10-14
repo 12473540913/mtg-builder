@@ -81,6 +81,12 @@ This runs both the client (port 5173) and server concurrently.
 pnpm build
 ```
 
+The frontend and backend deploy separately. Profile support requires deploying the
+updated backend to Cloud Run, not just rebuilding the Cloudflare Pages frontend.
+The backend image includes both `server/` and `shared/` for the profile validator.
+To check that the profile route is deployed, request `/api/profile` on the backend
+without a session: it should return a JSON `401 Unauthorized`, not an HTML `404`.
+
 ## Project Structure
 
 ```
@@ -139,7 +145,7 @@ See [frontend/screens/Auth/](frontend/screens/Auth/) for the authentication scre
 
 The header flag is imported from [frontend/assets/flag.jpg](frontend/assets/flag.jpg).
 The flag and footer NCC link both open https://ncc.lnks.rip in a new tab.
-The home screen and deck builder pages hide the header flag, leaving only the Profile
+The home screen, My Decks screen, and deck builder pages hide the header flag, leaving only the Profile
 link at the top right.
 The profile page shows only the NCC flag in its header.
 
@@ -154,8 +160,10 @@ The profile page has three sidebar sections: **Identity**, **Update Profile**, a
 **About**. Identity shows the account email, app-specific username, and email
 verification status. Update Profile saves the username in this app's MongoDB
 `profiles` collection and provides password changes and sign-out controls.
-Signed-out visitors can use the Sign In link and read About without accessing
-private account data. About describes MTG Builder and links to NCC.
+Signing out redirects to the sign-in page. Home, My Decks, deck builder, and all
+profile sections require a signed-in session; signed-out visits redirect to sign-in.
+Sign-up and password-recovery routes remain public. About describes MTG Builder
+and links to NCC.
 
 Profile updates do not modify auth-service account data. No profile photo, birthday,
 or display name is stored. Passwords and sessions remain managed by auth-service.

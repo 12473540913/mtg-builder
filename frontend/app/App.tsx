@@ -64,7 +64,7 @@ export function App() {
         <Route path="/decks/:id" element={isAuthenticated ? <DeckBuilder /> : <Navigate to="/" replace />} />
         <Route
           path="/profile"
-          element={<Profile session={session} />}
+          element={session ? <Profile session={session} /> : <Navigate to="/" replace />}
         />
         <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/"} replace />} />
       </Routes>

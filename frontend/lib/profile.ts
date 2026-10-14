@@ -7,6 +7,12 @@ async function requestProfile(init?: RequestInit): Promise<AppProfile> {
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
+  if (!response.headers.get("Content-Type")?.toLowerCase().includes("application/json")) {
+    if (response.status === 404) {
+      throw new Error("The profile API is unavailable. Deploy the updated MTG Builder backend, then retry.");
+    }
+    throw new Error(`Profile API returned an unexpected response (HTTP ${response.status}). Check the backend deployment and API URL.`);
+  }
   const payload = await response.json();
   if (!response.ok) {
     throw new Error(payload.error ?? "Profile request failed.");
