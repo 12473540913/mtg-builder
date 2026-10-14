@@ -1,8 +1,14 @@
 import { config as loadEnv } from "dotenv";
 import { MongoClient, type Db } from "mongodb";
+import { setServers } from "node:dns";
 
 loadEnv({ path: ".env.development" });
 loadEnv();
+
+const dnsServers = process.env.MONGODB_DNS_SERVERS?.trim();
+if (dnsServers) {
+  setServers(dnsServers.split(",").map((server) => server.trim()));
+}
 
 const connectionString = process.env.MONGODB_URI;
 

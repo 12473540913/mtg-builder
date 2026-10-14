@@ -5,6 +5,7 @@ import { config as loadEnv } from "dotenv";
 import { ObjectId } from "mongodb";
 import { getDb } from "./lib/db";
 import { authCookieName, verifyAuthToken } from "./lib/authVerify";
+import { validateProfile, type AppProfile } from "../shared/profile";
 
 loadEnv({ path: ".env.development" });
 loadEnv();
@@ -44,6 +45,7 @@ app.get("/api/health", (_req, res) => {
 type AuthenticatedUser = {
   id: string;
   email: string;
+  username: string | null;
 };
 
 // auth-service issues the token, but users live in this same MongoDB database (auth-service's
@@ -72,7 +74,7 @@ async function getAuthenticatedUserFromCookie(req: express.Request): Promise<Aut
 
   const db = await getDb();
   const user = await db
-    .collection<{ _id: ObjectId; email: string; authVersion: number }>("users")
+    .collection<{ _id: ObjectId; email: string; username?: string | null; authVersion: number }>("users")
     .findOne({ _id: new ObjectId(payload.sub) });
 
   console.log("Auth user lookup", {
@@ -84,8 +86,57 @@ async function getAuthenticatedUserFromCookie(req: express.Request): Promise<Aut
     return null;
   }
 
-  return { id: String(user._id), email: user.email };
+  return { id: String(user._id), email: user.email, username: user.username?.trim() || null };
 }
+
+type ProfileDoc = AppProfile & {
+  _id: string;
+  updatedAt: Date;
+};
+
+app.get("/api/profile", async (req, res) => {
+  try {
+    const user = await getAuthenticatedUserFromCookie(req);
+    if (!user) {
+      res.status(401).json({ ok: false, error: "Unauthorized" });
+      return;
+    }
+    const db = await getDb();
+    const profile = await db.collection<ProfileDoc>("profiles").findOne({ _id: user.id });
+    res.json({ ok: true, profile: { username: profile ? profile.username : user.username } });
+  } catch (error) {
+    console.error("Could not load profile", error);
+    res.status(500).json({ ok: false, error: "Could not load profile." });
+  }
+});
+
+app.put("/api/profile", async (req, res) => {
+  try {
+    const user = await getAuthenticatedUserFromCookie(req);
+    if (!user) {
+      res.status(401).json({ ok: false, error: "Unauthorized" });
+      return;
+    }
+    const input: unknown = req.body;
+    try {
+      validateProfile(input);
+    } catch (error) {
+      res.status(400).json({ ok: false, error: error instanceof Error ? error.message : "Invalid profile." });
+      return;
+    }
+    const profile: AppProfile = { username: input.username };
+    const db = await getDb();
+    await db.collection<ProfileDoc>("profiles").updateOne(
+      { _id: user.id },
+      { $set: { ...profile, updatedAt: new Date() } },
+      { upsert: true }
+    );
+    res.json({ ok: true, profile });
+  } catch (error) {
+    console.error("Could not save profile", error);
+    res.status(500).json({ ok: false, error: "Could not save profile." });
+  }
+});
 
 const VALID_FORMATS = new Set(["house", "standard", "commander", "limited"]);
 

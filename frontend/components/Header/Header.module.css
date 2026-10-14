@@ -20,6 +20,23 @@
   text-decoration: none;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.flagLink {
+  display: block;
+  flex-shrink: 0;
+}
+
+.flag {
+  display: block;
+  width: 60px;
+  height: auto;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -43,4 +60,22 @@
   background: rgba(245, 236, 216, 0.12);
   border-color: rgba(245, 236, 216, 0.35);
   transform: translateY(-1px);
+}
+
+@media (max-width: 560px) {
+  .logo {
+    font-size: 24px;
+  }
+
+  .headerRight {
+    gap: 8px;
+  }
+
+  .navLink {
+    padding: 8px;
+  }
+
+  .flag {
+    width: 48px;
+  }
 }

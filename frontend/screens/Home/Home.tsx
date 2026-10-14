@@ -4,7 +4,7 @@ import styles from "./Home.module.css";
 
 export function Home() {
   return (
-    <ScreenShell headerVariant="user">
+    <ScreenShell headerVariant="user" showFlag={false}>
       <div className={styles.homePage}>
         <h1 className={styles.title}>mtg-builder</h1>
         <p className={styles.subtitle}>Build and save your Magic: The Gathering deck combinations from every available card.</p>

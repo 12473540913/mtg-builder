@@ -4,6 +4,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
+    publicDir: "frontend/assets/favicon",
     server: {
       proxy: {
         "/api": "http://localhost:3001",

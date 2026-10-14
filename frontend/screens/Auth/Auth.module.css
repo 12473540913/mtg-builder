@@ -89,6 +89,14 @@
   text-decoration: none;
 }
 
+.loginLinks {
+  color: var(--ember);
+}
+
+.loginLinks a {
+  text-decoration: underline;
+}
+
 .inlineForm {
   display: flex;
   align-items: center;

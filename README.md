@@ -86,6 +86,7 @@ pnpm build
 ```
 ├── frontend/               # Frontend React application
 │   ├── app/                # App root component and routes
+│   ├── assets/             # NCC flag and favicon assets
 │   ├── components/         # Reusable React components (ScreenShell, Header, CardTile, ...)
 │   ├── screens/             # Full-page screens
 │   │   ├── Auth/           # Authentication screens
@@ -133,6 +134,31 @@ Authentication is delegated to the standalone `auth-service`:
 - User data stored in this app's MongoDB database via auth-service's `ATLAS_URI_MTGBUILDER` connection
 
 See [frontend/screens/Auth/](frontend/screens/Auth/) for the authentication screens.
+
+### Branding Assets
+
+The header flag is imported from [frontend/assets/flag.jpg](frontend/assets/flag.jpg).
+The flag and footer NCC link both open https://ncc.lnks.rip in a new tab.
+The home screen and deck builder pages hide the header flag, leaving only the Profile
+link at the top right.
+The profile page shows only the NCC flag in its header.
+
+Vite serves [frontend/assets/favicon/](frontend/assets/favicon/) as its public directory
+and copies its contents unchanged to the production build root. The HTML includes
+SVG, ICO, and PNG browser icons, an Apple touch icon, and a web app manifest with
+Android icons. Keep the manifest icon paths relative to the site root.
+
+### Profile
+
+The profile page has three sidebar sections: **Identity**, **Update Profile**, and
+**About**. Identity shows the account email, app-specific username, and email
+verification status. Update Profile saves the username in this app's MongoDB
+`profiles` collection and provides password changes and sign-out controls.
+Signed-out visitors can use the Sign In link and read About without accessing
+private account data. About describes MTG Builder and links to NCC.
+
+Profile updates do not modify auth-service account data. No profile photo, birthday,
+or display name is stored. Passwords and sessions remain managed by auth-service.
 
 ### Deck Format Rules
 

@@ -46,6 +46,25 @@ rather than mirroring the old relational `decks` + `deck_cards` split.
 }
 ```
 
+### `profiles` (owned by this app)
+
+One document per account, keyed by the auth-service user ID (a string `_id`).
+`GET /api/profile` reads the authenticated user's profile; `PUT /api/profile`
+upserts only that user's app-specific username and `updatedAt`.
+
+```jsonc
+{
+  "_id": "<auth-service user id, as a string>",
+  "username": "deckbuilder",
+  "updatedAt": ISODate
+}
+```
+
+Until a profile is saved, the account's sign-up username is used as the initial value.
+Updates never write to auth-service's `users` collection or change sign-in credentials.
+Profile usernames are app-specific labels, not unique authentication identifiers.
+No profile image, birthday, or display name is stored.
+
 ## Recommended indexes
 
 Not required to run the app (Mongo works fine without them at small scale), but worth
@@ -57,3 +76,12 @@ db.decks.createIndex({ userId: 1, updatedAt: -1 });
 
 Connect with `mongosh "$MONGODB_URI"` and run the command above, or add it to a one-off
 setup script if you prefer to automate it.
+
+## Atlas DNS troubleshooting
+
+An active auth-service session does not guarantee the local backend can reach Atlas.
+If backend logs report `querySrv ECONNREFUSED`, compare Node's DNS servers with the
+system resolver. Set `MONGODB_DNS_SERVERS` to a comma-separated list of working DNS
+server IP addresses in your backend environment and restart the backend. Leave it
+unset when the default resolver works. This configures Node's DNS resolution,
+including the SRV/TXT lookups required by `mongodb+srv` connection strings.

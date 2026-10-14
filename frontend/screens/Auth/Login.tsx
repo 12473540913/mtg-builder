@@ -57,8 +57,8 @@ export function Login() {
 
           {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
-          <div className={styles.textLinks}>
-            <Link to="/signup">Don't have an account? Sign Up here.</Link>
+          <div className={`${styles.textLinks} ${styles.loginLinks}`}>
+            <span>Don't have an account? <Link to="/signup">Sign up here.</Link></span>
             <Link to="/forgot">Forgot your password?</Link>
           </div>
         </AuthCard>

@@ -1,56 +1,163 @@
 .page {
-  max-width: 480px;
+  max-width: 1160px;
   margin: 0 auto;
-  padding: 60px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  padding: 48px 24px 64px;
 }
 
 .title {
   font-family: var(--serif);
   font-size: 30px;
   font-weight: 400;
-  margin: 0;
+  margin: 0 0 24px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  align-items: start;
+  gap: 32px;
+}
+
+.sideNav {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.sideNavButton {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--forest-deep);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sideNavButton:hover {
+  border-color: var(--gold);
+}
+
+.sideNavButton:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.active {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--paper);
+}
+
+.content,
+.panel {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.card {
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.sectionTitle {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+  text-align: center;
+  margin: 0 0 24px;
+}
+
+.card p {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.card p:last-child {
+  margin-bottom: 0;
 }
 
 .detailList {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 8px 16px;
-  font-size: 14px;
+  gap: 12px;
+  margin: 0;
+}
+
+.detailList div {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
 }
 
 .detailList dt {
-  font-weight: 700;
+  font-size: 12px;
   color: var(--muted);
+  margin-bottom: 4px;
 }
 
 .detailList dd {
   margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
-.passwordSection {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.passwordForm {
-  width: 100%;
+.form,
+.fields,
+.field {
   display: grid;
   gap: 16px;
 }
 
-.passwordField {
-  display: grid;
+.fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.fields > button {
+  justify-self: center;
+}
+
+.field {
   gap: 8px;
 }
 
 .fieldLabel {
   margin: 0;
   font-size: 14px;
+  font-weight: 700;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.notice {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+
+.sessionActions {
+  display: flex;
+  justify-content: center;
+}
+
+.signInLink {
+  padding: 10px 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  color: var(--forest);
+  text-decoration: none;
   font-weight: 700;
 }
 
@@ -66,4 +173,29 @@
 
 .successMessage {
   color: var(--forest);
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 32px 20px 48px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sideNav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sideNavButton {
+    text-align: center;
+    padding: 10px 6px;
+    font-size: 13px;
+  }
+
+  .card {
+    padding: 20px;
+  }
 }

@@ -178,14 +178,14 @@ export function DeckBuilder() {
 
   if (loading) {
     return (
-      <ScreenShell headerVariant="user">
+      <ScreenShell headerVariant="user" showFlag={false}>
         <div className={styles.page}>Loading deck...</div>
       </ScreenShell>
     );
   }
 
   return (
-    <ScreenShell headerVariant="user">
+    <ScreenShell headerVariant="user" showFlag={false}>
       <div className={styles.page}>
         <div className={styles.metaRow}>
           <div className={styles.metaField}>
