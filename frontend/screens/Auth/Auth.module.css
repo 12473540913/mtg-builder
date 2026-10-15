@@ -55,6 +55,11 @@
   margin: 0;
 }
 
+.passwordField {
+  display: grid;
+  gap: 8px;
+}
+
 .buttonRow {
   grid-column: 1 / -1;
   display: flex;

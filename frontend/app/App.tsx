@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Login, SignUp, ForgotCredentials, NewPassword, PasswordUpdated } from "../screens/Auth";
-import { Home } from "../screens/Home";
 import { DeckList } from "../screens/Decks";
 import { DeckBuilder } from "../screens/DeckBuilder";
 import { Profile } from "../screens/Profile";
@@ -53,12 +52,12 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/home" replace /> : <Login />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to="/decks" replace /> : <Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot" element={<ForgotCredentials />} />
         <Route path="/reset-password" element={<NewPassword />} />
         <Route path="/password-updated" element={<PasswordUpdated />} />
-        <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/" replace />} />
+        <Route path="/home" element={<Navigate to={isAuthenticated ? "/decks" : "/"} replace />} />
         <Route path="/decks" element={isAuthenticated ? <DeckList /> : <Navigate to="/" replace />} />
         <Route path="/decks/new" element={isAuthenticated ? <DeckBuilder /> : <Navigate to="/" replace />} />
         <Route path="/decks/:id" element={isAuthenticated ? <DeckBuilder /> : <Navigate to="/" replace />} />
@@ -66,7 +65,7 @@ export function App() {
           path="/profile"
           element={session ? <Profile session={session} /> : <Navigate to="/" replace />}
         />
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/"} replace />} />
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/decks" : "/"} replace />} />
       </Routes>
     </BrowserRouter>
   );

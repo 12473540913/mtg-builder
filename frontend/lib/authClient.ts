@@ -119,10 +119,10 @@ export const authClient = {
     notifyAuthChanged();
   },
 
-  async signUp(email: string, username: string, password: string): Promise<SignUpResult> {
+  async signUp(email: string, password: string): Promise<SignUpResult> {
     const payload = await fetchAuth("/signup", {
       method: "POST",
-      body: JSON.stringify({ email, username, password }),
+      body: JSON.stringify({ email, password }),
     });
     return {
       verificationCode:
@@ -171,10 +171,10 @@ export const authClient = {
     notifyAuthChanged();
   },
 
-  async changePassword(password: string): Promise<void> {
+  async changePassword(currentPassword: string, password: string): Promise<void> {
     await fetchAuth("/account/password", {
       method: "PATCH",
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ currentPassword, password }),
     });
   },
 

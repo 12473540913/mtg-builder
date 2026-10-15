@@ -8,10 +8,10 @@ type Props = {
   showFlag?: boolean;
 };
 
-export function Header({ homeLink = "/", variant = "guest", showFlag = true }: Props) {
+export function Header({ homeLink, variant = "guest", showFlag = true }: Props) {
   return (
     <header className={styles.header}>
-      <Link className={styles.logo} to={homeLink}>mtg-builder</Link>
+      <Link className={styles.logo} to={homeLink ?? (variant === "user" ? "/decks" : "/")}>mtg-builder</Link>
       <div className={styles.headerRight}>
         {variant === "user" && (
           <nav className={styles.nav} aria-label="Primary">

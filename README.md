@@ -157,16 +157,20 @@ Android icons. Keep the manifest icon paths relative to the site root.
 ### Profile
 
 The profile page has three sidebar sections: **Identity**, **Update Profile**, and
-**About**. Identity shows the account email, app-specific username, and email
-verification status. Update Profile saves the username in this app's MongoDB
-`profiles` collection and provides password changes and sign-out controls.
+**About**. Identity shows the account email and email verification status. Update
+Profile contains a single box with **Sign Out** and **Change Password** buttons.
+Change Password opens a popup form for the current password, new password,
+and password confirmation. Submitting verifies the current password through
+auth-service before changing it.
+On Change Password and Sign Up, unmet password requirements appear in a red column
+below the password field after typing starts and disappear individually as they are met.
 Signing out redirects to the sign-in page. Home, My Decks, deck builder, and all
 profile sections require a signed-in session; signed-out visits redirect to sign-in.
 Sign-up and password-recovery routes remain public. About describes MTG Builder
 and links to NCC.
 
-Profile updates do not modify auth-service account data. No profile photo, birthday,
-or display name is stored. Passwords and sessions remain managed by auth-service.
+No profile photo, birthday, or display name is stored. Passwords and sessions
+remain managed by auth-service.
 
 ### Deck Format Rules
 
