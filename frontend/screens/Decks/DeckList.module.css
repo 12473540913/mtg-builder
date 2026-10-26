@@ -38,9 +38,9 @@
 
 .lane {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 24px;
+  gap: 16px;
   min-width: 0;
   padding: 18px 0;
   border-top: 1px solid rgba(105, 87, 54, 0.2);
@@ -61,7 +61,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(0, 280px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   min-width: 0;
 }
@@ -101,8 +101,8 @@
 }
 
 .coverImage {
-  width: 48%;
-  flex: 0 0 48%;
+  width: 36%;
+  flex: 0 0 36%;
   aspect-ratio: 5 / 7;
   object-fit: cover;
   border: 1px solid var(--border-strong);
@@ -143,22 +143,19 @@
   margin: 0;
 }
 
-@media (max-width: 640px) {
-  .lane {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
+@media (max-width: 640px) {
   .laneTitle {
     align-self: start;
   }
 
   .grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .card {
-    max-width: 320px;
   }
 
   .laneTitle {
