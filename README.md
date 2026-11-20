@@ -4,7 +4,9 @@ A Magic: The Gathering deck builder. Sign in, search across every published Magi
 assemble decks with real card images, and save them to your account for later editing.
 
 ## Demos
-- demo coming soon!
+- https://github.com/user-attachments/assets/a6828d7e-21b8-42b3-907e-5ab2530eafd6
+
+
 
 ## Features
 
